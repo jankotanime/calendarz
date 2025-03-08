@@ -3,11 +3,13 @@
 #include "Tile.h"
 #include <iostream>
 #include <thread>
+#include <functional>
 #include <chrono>
 
-
-// Definicja aplikacji
 wxIMPLEMENT_APP(MyApp);
+
+void frames_paint(wxPaintEvent& event, int width, int height, wxPanel* panel);
+void dates(wxPaintEvent& event, wxPanel* panel);
 
 bool MyApp::OnInit() {
   wxFrame* frame = new wxFrame(nullptr, wxID_ANY, "Calendarz", wxDefaultPosition, wxSize(WIDTH, HEIGHT));
@@ -15,9 +17,12 @@ bool MyApp::OnInit() {
 
   wxPanel* panel = new wxPanel(frame);
   
-  new Tile(WIDTH, HEIGHT, panel);
+  panel->Bind(wxEVT_PAINT, [=](wxPaintEvent& event) {
+    frames_paint(event, WIDTH, HEIGHT, panel);
+    dates(event, panel);
+  });
+  
 
-  panel->Refresh();
   frame->Show(true);
 
   return true;
