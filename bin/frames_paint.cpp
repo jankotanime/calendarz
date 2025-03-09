@@ -20,39 +20,24 @@ int first_day_of_month(int year, int month) {
   return tmDate.tm_wday - 1;
 }
 
-void frames_paint(wxPaintEvent& event, int width, int height, wxPanel* panel) {
-  // auto now = std::chrono::system_clock::now();
-  // std::time_t time = std::chrono::system_clock::to_time_t(now);
-  // std::tm* localTime = std::localtime(&time);
-  
-  // ? Changeable date 
-  std::tm tmDate = {};
-  tmDate.tm_year = 2028 - 1900;
-  tmDate.tm_mon = 9 - 1;
-  tmDate.tm_mday = 28;
-  std::time_t time = std::mktime(&tmDate);
-  std::tm* localTime = std::localtime(&time);
-
-  int year = 1900 + localTime->tm_year;
-  int month = localTime->tm_mon;
-  int day = localTime->tm_mday;
-  int week_day = localTime->tm_wday;
+void frames_paint(wxPaintEvent& event, int width, int height, std::tm localTime, wxPanel* panel) {
+  int year = 1900 + localTime.tm_year;
+  int month = localTime.tm_mon;
+  int day = localTime.tm_mday;
+  int week_day = localTime.tm_wday;
   
   int first_day = first_day_of_month(year, month);
 
-  std::time_t last_month_t = time;
-  std::tm last_month = *std::localtime(&last_month_t);
+  std::tm last_month = localTime;
   last_month.tm_mday = 1;
   last_month.tm_mday -= 1;
-  last_month_t = std::mktime(&last_month);
+  std::mktime(&last_month);
   int mday = last_month.tm_mday;
-
-  std::time_t next_month_t = time;
-  std::tm next_month = *std::localtime(&next_month_t);
+  
+  std::tm next_month = localTime;
   next_month.tm_mon += 1;
-  next_month_t = std::mktime(&next_month);
 
-  int days = floor(std::difftime(next_month_t, time)/86400.0);
+  int days = floor(std::difftime(std::mktime(&next_month), std::mktime(&localTime))/86400.0);
   next_month.tm_mday = 1;
 
   int x_border = 20;
@@ -100,7 +85,6 @@ void frames_paint(wxPaintEvent& event, int width, int height, wxPanel* panel) {
       }
     }
   }
-  std::cout << first_day << "," << month << std::endl;
   dc.DrawLine(x_border, y_border_end, x_border_end, y_border_end);
   dc.DrawLine(x_border_end, y_border, x_border_end, y_border_end);
 }
