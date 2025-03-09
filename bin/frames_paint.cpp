@@ -6,34 +6,54 @@
 
 int first_day_of_month(int year, int month) {
   std::tm tmDate = {};
-  tmDate.tm_year = year - 1900;
-  tmDate.tm_mon = month - 1;
+  tmDate.tm_year = year;
+  tmDate.tm_mon = month;
   tmDate.tm_mday = 1;
-  std::mktime(&tmDate);
-  return tmDate.tm_wday;
+  std::time_t t_date = std::mktime(&tmDate);
+  tmDate = *std::localtime(&t_date);
+  if (tmDate.tm_wday == 0) {
+    return 6;
+  } 
+  if (tmDate.tm_wday == 1) {
+    return 7;
+  }
+  return tmDate.tm_wday - 1;
 }
 
 void frames_paint(wxPaintEvent& event, int width, int height, wxPanel* panel) {
   // auto now = std::chrono::system_clock::now();
   // std::time_t time = std::chrono::system_clock::to_time_t(now);
   // std::tm* localTime = std::localtime(&time);
+  
+  // ? Changeable date 
   std::tm tmDate = {};
-  tmDate.tm_year = 2025 - 1900;
-  tmDate.tm_mon = 3 - 1;
-  tmDate.tm_mday = 13;
+  tmDate.tm_year = 2028 - 1900;
+  tmDate.tm_mon = 9 - 1;
+  tmDate.tm_mday = 28;
   std::time_t time = std::mktime(&tmDate);
   std::tm* localTime = std::localtime(&time);
-  
+
   int year = 1900 + localTime->tm_year;
-  int month = 1 + localTime->tm_mon;
+  int month = localTime->tm_mon;
   int day = localTime->tm_mday;
   int week_day = localTime->tm_wday;
   
-  int last_month = localTime->tm_mon;
-  int next_month = 2 + localTime->tm_mon;
   int first_day = first_day_of_month(year, month);
 
-  std::cout << week_day << "," << first_day << std::endl;
+  std::time_t last_month_t = time;
+  std::tm last_month = *std::localtime(&last_month_t);
+  last_month.tm_mday = 1;
+  last_month.tm_mday -= 1;
+  last_month_t = std::mktime(&last_month);
+  int mday = last_month.tm_mday;
+
+  std::time_t next_month_t = time;
+  std::tm next_month = *std::localtime(&next_month_t);
+  next_month.tm_mon += 1;
+  next_month_t = std::mktime(&next_month);
+
+  int days = floor(std::difftime(next_month_t, time)/86400.0);
+  next_month.tm_mday = 1;
 
   int x_border = 20;
   int y_border = 80;
@@ -57,21 +77,30 @@ void frames_paint(wxPaintEvent& event, int width, int height, wxPanel* panel) {
       int yEnd = y + floor(height / 6.0);
       dc.DrawLine(x, y, xEnd-10, y);
       dc.DrawLine(x, y, x, yEnd-15);
-      if (j-1 == (day/7) && (i+1)%7 == week_day && i != 6) {
+      int draw_day;
+      
+      if (first_day > 3) {
+        draw_day = (i + j * 7 - first_day + 2);
+      } else {
+        draw_day = (i + j * 7 - first_day - 5);
+      }
+
+      if (draw_day == day) {
         dc.SetBrush(wxBrush(wxColour(180, 200, 180)));
         dc.DrawRectangle(x, y, floor((width - x_border * 2) / 7.0), floor((height - y_border) / 6.0));  
         dc.DrawText(std::to_string(day), wxPoint(x+10, y+10));
-      } else if (j == (day/7) && (i+1)%7 == week_day && i == 6) {
-        dc.SetBrush(wxBrush(wxColour(180, 200, 180)));
-        dc.DrawRectangle(x, y, floor((width - x_border * 2) / 7.0), floor((height - y_border) / 6.0)); 
-        dc.DrawText(std::to_string(day), wxPoint(x+10, y+10));
       } else {
-        dc.DrawText(std::to_string(i - 3 + first_day + (j - 1) * 7), wxPoint(x+10, y+10));
+        if (days < draw_day) {
+          dc.DrawText(std::to_string(draw_day - days), wxPoint(x+10, y+10));
+        } else if (draw_day < 1) {
+          dc.DrawText(std::to_string(last_month.tm_mday+draw_day), wxPoint(x+10, y+10));
+        } else {
+          dc.DrawText(std::to_string(draw_day), wxPoint(x+10, y+10));
+        }
       }
     }
   }
+  std::cout << first_day << "," << month << std::endl;
   dc.DrawLine(x_border, y_border_end, x_border_end, y_border_end);
   dc.DrawLine(x_border_end, y_border, x_border_end, y_border_end);
-  
-  dc.DrawLine(1, 1, 100, 100);
 }
