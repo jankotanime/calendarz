@@ -3,6 +3,11 @@
 #include <math.h>
 #include <chrono>
 #include <ctime>
+#include "Tile.h"
+
+struct OneTile {
+  int day, month, year; 
+};
 
 int first_day_of_month(int year, int month) {
   std::tm tmDate = {};
@@ -21,7 +26,8 @@ int first_day_of_month(int year, int month) {
   return tmDate.tm_wday - 1;
 }
 
-void frames_paint(wxPaintEvent& event, int width, int height, const std::tm& localTime, std::tm today, wxPanel* panel) {
+void frames_paint(wxPaintEvent& event, int width, int height, const std::tm& localTime, std::tm today, Tile& tile, wxPanel* panel) {
+  OneTile clicked_tile = {0, 0, 0};
   std::tm localTimeCopy = localTime;
   localTimeCopy.tm_year + 1900;
 
@@ -79,15 +85,21 @@ void frames_paint(wxPaintEvent& event, int width, int height, const std::tm& loc
       if (draw_day == day && year == today.tm_year && month == today.tm_mon) {
         if (localPos.x > x && localPos.x < xEnd-10 && localPos.y > y && localPos.y < yEnd-15) {
           dc.SetBrush(wxBrush(wxColour(200, 220, 200))); 
+          panel->Bind(wxEVT_LEFT_DOWN, [&tile, draw_day, month, year, &clicked_tile](wxMouseEvent& event) {
+            tile.changeDate(draw_day, month, year);
+          });
         } else {
           dc.SetBrush(wxBrush(wxColour(180, 200, 180)));
         }
         dc.DrawRectangle(x, y, floor((width - x_border * 2) / 7.0), floor((height - y_border) / 6.0));  
-        dc.DrawText(std::to_string(day), wxPoint(x+10, y+10)); 
+        dc.DrawText(std::to_string(day), wxPoint(x+10, y+10));
       } else {
         if (localPos.x > x && localPos.x < xEnd-10 && localPos.y > y && localPos.y < yEnd-15) {
+          panel->Bind(wxEVT_LEFT_DOWN, [&tile, draw_day, month, year, &clicked_tile](wxMouseEvent& event) {
+            tile.changeDate(draw_day, month, year);
+          });
           dc.SetBrush(wxBrush(wxColour(155, 175, 155)));
-          dc.DrawRectangle(x, y, floor((width - x_border * 2) / 7.0), floor((height - y_border) / 6.0));  
+          dc.DrawRectangle(x, y, floor((width - x_border * 2) / 7.0), floor((height - y_border) / 6.0));
         }
         if (days < draw_day) {
           dc.SetTextForeground(wxColour(100, 100, 100));
@@ -107,6 +119,9 @@ void frames_paint(wxPaintEvent& event, int width, int height, const std::tm& loc
   dc.SetFont(wxFont(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
   dc.DrawText(std::to_string(localPos.x), wxPoint(5, 5));
   dc.DrawText(std::to_string(localPos.y), wxPoint(50, 5));
+
+  wxBitmap testimg("img/test.jpg", wxBITMAP_TYPE_JPEG);
+  wxStaticBitmap* test = new wxStaticBitmap(panel, wxID_ANY, testimg, wxPoint(1000, 800), wxSize(40, 40));
 
   dc.DrawLine(x_border, y_border_end, x_border_end, y_border_end);
   dc.DrawLine(x_border_end, y_border, x_border_end, y_border_end);

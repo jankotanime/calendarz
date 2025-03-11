@@ -5,13 +5,17 @@
 #include <iostream>
 
 class Tile {
+  private:
+  int day;
+  int month;
+  int year;
   public:
-  Tile(int width, int height, wxPanel* panel);
-  void paint(wxPaintEvent& event);
-private:
-  int width;
-  int height;
-  wxPanel* m_panel;
+  Tile(int day, int month, int year);
+  void myDate();
+  int getDay();
+  int getMonth();
+  int getYear();
+  void changeDate(int d, int m, int y);
 };
 
 #endif

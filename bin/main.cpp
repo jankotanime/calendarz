@@ -8,8 +8,13 @@
 
 wxIMPLEMENT_APP(MyApp);
 
-void frames_paint(wxPaintEvent& event, int width, int height, const std::tm& localTime, std::tm today, wxPanel* panel);
+struct OneTile {
+  int day, month, year; 
+};
+
+void frames_paint(wxPaintEvent& event, int width, int height, const std::tm& localTime, std::tm today, Tile& tile, wxPanel* panel);
 void dates(wxPaintEvent& event, std::tm* localTime, wxPanel* panel);
+Tile pick_tile(OneTile);
 
 bool MyApp::OnInit() {
   wxFrame* frame = new wxFrame(nullptr, wxID_ANY, "Calendarz", wxDefaultPosition, wxSize(WIDTH, HEIGHT));
@@ -23,7 +28,6 @@ bool MyApp::OnInit() {
   std::tm* localTime = std::localtime(&time);
   localTime->tm_year += 1900;
   const std::tm today = *localTime;
-
   
   // ? Changeable date 
   // std::tm tmDate = {};
@@ -34,7 +38,10 @@ bool MyApp::OnInit() {
   // std::tm* localTime = std::localtime(&time);
   
   panel->Bind(wxEVT_PAINT, [=](wxPaintEvent& event) {
-    frames_paint(event, WIDTH, HEIGHT, *localTime, today, panel);
+    if (tile.getDay() != 0) {
+      std::cout << tile.getDay() << std::endl;
+    }
+    frames_paint(event, WIDTH, HEIGHT, *localTime, today, tile, panel);
     dates(event, localTime, panel);
   });
 
