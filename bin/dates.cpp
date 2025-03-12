@@ -4,31 +4,9 @@
 
 std::string get_month(int n);
 
-void dates(wxPaintEvent& event, std::tm* localTime, wxPanel* panel) {
+void dates(std::tm* localTime, wxPanel* panel) {
   wxPaintDC dc(panel);
 
-  wxBitmap image_arrow_left("img/arrow_left.png", wxBITMAP_TYPE_JPEG);
-  wxStaticBitmap* arrow_left = new wxStaticBitmap(panel, wxID_ANY, image_arrow_left, wxPoint(20, 20), wxSize(82, 20));
-
-  arrow_left->Bind(wxEVT_LEFT_DOWN, [localTime](wxMouseEvent&) {
-    localTime->tm_mon -= 1;
-    if (localTime->tm_mon < 0) {
-      localTime->tm_mon = 11;
-      localTime->tm_year -= 1;
-    }
-  });
-
-  wxBitmap image_arrow_right("img/arrow_right.png", wxBITMAP_TYPE_JPEG);
-  wxStaticBitmap* arrow_right = new wxStaticBitmap(panel, wxID_ANY, image_arrow_right, wxPoint(1000, 20), wxSize(82, 20));
-
-  arrow_right->Bind(wxEVT_LEFT_DOWN, [localTime](wxMouseEvent&) {
-    localTime->tm_mon += 1;
-    if (localTime->tm_mon > 11) {
-      localTime->tm_mon = 0;
-      localTime->tm_year += 1;
-    }
-  });
-  
   dc.SetFont(wxFont(20, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
   dc.SetTextForeground(wxColour(10, 30, 10));
   dc.DrawText(get_month(localTime->tm_mon), wxPoint(400, 20));

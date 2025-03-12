@@ -9,6 +9,10 @@ struct OneTile {
   int day, month, year; 
 };
 
+struct Images {
+  wxStaticBitmap* back, *left, *right; 
+};
+
 int first_day_of_month(int year, int month) {
   std::tm tmDate = {};
   tmDate.tm_year = year;
@@ -26,7 +30,7 @@ int first_day_of_month(int year, int month) {
   return tmDate.tm_wday - 1;
 }
 
-void frames_paint(wxPaintEvent& event, int width, int height, const std::tm& localTime, std::tm today, Tile& tile, wxPanel* panel) {
+void frames_paint(int width, int height, const std::tm& localTime, std::tm today, Tile& tile, Images& images, wxPanel* panel) {
   OneTile clicked_tile = {0, 0, 0};
   std::tm localTimeCopy = localTime;
   localTimeCopy.tm_year + 1900;
@@ -84,9 +88,12 @@ void frames_paint(wxPaintEvent& event, int width, int height, const std::tm& loc
       }
       if (draw_day == day && year == today.tm_year && month == today.tm_mon) {
         if (localPos.x > x && localPos.x < xEnd-10 && localPos.y > y && localPos.y < yEnd-15) {
-          dc.SetBrush(wxBrush(wxColour(200, 220, 200))); 
-          panel->Bind(wxEVT_LEFT_DOWN, [&tile, draw_day, month, year, &clicked_tile](wxMouseEvent& event) {
+          dc.SetBrush(wxBrush(wxColour(200, 220, 200)));
+          panel->Bind(wxEVT_LEFT_DOWN, [&tile, images, draw_day, month, year, &clicked_tile](wxMouseEvent& event) {
             tile.changeDate(draw_day, month, year);
+            images.back->Show();
+            images.left->Hide();
+            images.right->Hide();
           });
         } else {
           dc.SetBrush(wxBrush(wxColour(180, 200, 180)));
@@ -94,9 +101,12 @@ void frames_paint(wxPaintEvent& event, int width, int height, const std::tm& loc
         dc.DrawRectangle(x, y, floor((width - x_border * 2) / 7.0), floor((height - y_border) / 6.0));  
         dc.DrawText(std::to_string(day), wxPoint(x+10, y+10));
       } else {
-        if (localPos.x > x && localPos.x < xEnd-10 && localPos.y > y && localPos.y < yEnd-15) {
-          panel->Bind(wxEVT_LEFT_DOWN, [&tile, draw_day, month, year, &clicked_tile](wxMouseEvent& event) {
+        if (localPos.x > x+10 && localPos.x < xEnd-10 && localPos.y > y+15 && localPos.y < yEnd-15) {
+          panel->Bind(wxEVT_LEFT_DOWN, [&tile, &images, draw_day, month, year, &clicked_tile](wxMouseEvent& event) {
             tile.changeDate(draw_day, month, year);
+            images.back->Show();
+            images.left->Hide();
+            images.right->Hide();
           });
           dc.SetBrush(wxBrush(wxColour(155, 175, 155)));
           dc.DrawRectangle(x, y, floor((width - x_border * 2) / 7.0), floor((height - y_border) / 6.0));

@@ -7,7 +7,7 @@
 
 std::string get_month(int n);
 
-void edit_day_paint(wxPaintEvent& event, int width, int height, Tile& tile, wxPanel* panel) {
+void edit_day_paint(int width, int height, Tile& tile, wxPanel* panel) {
   int x_border = 20;
   int y_border = 80;
   int x_border_end = width-25;
@@ -27,12 +27,6 @@ void edit_day_paint(wxPaintEvent& event, int width, int height, Tile& tile, wxPa
   dc.SetFont(wxFont(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
   dc.DrawText(std::to_string(localPos.x), wxPoint(5, 5));
   dc.DrawText(std::to_string(localPos.y), wxPoint(50, 5));
-
-  wxBitmap testimg("img/test.jpg", wxBITMAP_TYPE_JPEG);
-  wxStaticBitmap* test = new wxStaticBitmap(panel, wxID_ANY, testimg, wxPoint(1000, 800), wxSize(40, 40));
-  test->Bind(wxEVT_LEFT_DOWN, [&tile](wxMouseEvent& event) {
-    tile.changeDate(0, 0, 0);
-  });
 
   dc.SetPen(wxPen(wxColour(20, 40, 20), 5));
   dc.DrawLine(x_border, y_border, x_border_end, y_border);
