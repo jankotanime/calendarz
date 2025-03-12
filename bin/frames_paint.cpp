@@ -120,9 +120,7 @@ void frames_paint(wxPaintEvent& event, int width, int height, const std::tm& loc
   dc.DrawText(std::to_string(localPos.x), wxPoint(5, 5));
   dc.DrawText(std::to_string(localPos.y), wxPoint(50, 5));
 
-  wxBitmap testimg("img/test.jpg", wxBITMAP_TYPE_JPEG);
-  wxStaticBitmap* test = new wxStaticBitmap(panel, wxID_ANY, testimg, wxPoint(1000, 800), wxSize(40, 40));
-
+  dc.SetPen(wxPen(wxColour(20, 40, 20), 5));
   dc.DrawLine(x_border, y_border_end, x_border_end, y_border_end);
   dc.DrawLine(x_border_end, y_border, x_border_end, y_border_end);
 }

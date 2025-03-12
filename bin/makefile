@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = `wx-config --cxxflags`
 LDFLAGS = `wx-config --libs`
-SRC = main.cpp frames_paint.cpp dates.cpp picked_date_management.cpp Tile.cpp
+SRC = main.cpp frames_paint.cpp dates.cpp picked_date_management.cpp Tile.cpp edit_day_paint.cpp methods.cpp
 OBJ = $(SRC:.cpp=.o)
 EXE = ../calendarz.exe
 

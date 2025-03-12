@@ -10,7 +10,6 @@ class MyApp : public wxApp {
   int HEIGHT = 900;
   Tile tile = Tile(0, 0, 0);
 
-
   virtual bool OnInit();
   void OnPaint(wxPaintEvent& event);
   private:

@@ -1,16 +1,8 @@
 #include <chrono>
 #include <wx/wx.h>
 #include <iostream>
-#include <forward_list>
 
-std::string get_month(int n) {
-  std::forward_list<std::string> months = {"Styczen", "Luty", "Marzec", "Kwiecien", "Maj", "Czerwiec", "Lipiec", "Sierpien", "Wrzesien", "Pazdziernik", "Listopad", "Grudzien"};
-  for (int i = 0; i < n; i++) {
-    months.pop_front();
-  }
-  std::string result = months.front();
-  return result;
-}
+std::string get_month(int n);
 
 void dates(wxPaintEvent& event, std::tm* localTime, wxPanel* panel) {
   wxPaintDC dc(panel);
