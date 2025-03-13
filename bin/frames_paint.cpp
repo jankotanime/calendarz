@@ -4,6 +4,8 @@
 #include <chrono>
 #include <ctime>
 #include "Tile.h"
+#include "Event.h"
+#include <forward_list>
 
 struct OneTile {
   int day, month, year; 
@@ -30,7 +32,16 @@ int first_day_of_month(int year, int month) {
   return tmDate.tm_wday - 1;
 }
 
-void frames_paint(int width, int height, const std::tm& localTime, std::tm today, Tile& tile, Images& images, wxPanel* panel) {
+bool event_day(std::forward_list<Event> events, int d, int m, int y) {
+  for (auto& event : events) {
+    if (event.getDay() == d && event.getMonth() == m && event.getYear() == y) {
+      return true;
+    }
+  }
+  return false;
+}
+
+void frames_paint(int width, int height, const std::tm& localTime, std::tm today, Tile& tile, Images& images, std::forward_list<Event> events, wxPanel* panel) {
   OneTile clicked_tile = {0, 0, 0};
   std::tm localTimeCopy = localTime;
   localTimeCopy.tm_year + 1900;
@@ -123,6 +134,10 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
           dc.SetTextForeground(wxColour(10, 30, 10));
           dc.DrawText(std::to_string(draw_day), wxPoint(x+10, y+10));
         }
+      }
+      if (event_day(events, draw_day, month, year)) {
+        dc.SetBrush(wxBrush(wxColour(200, 100, 100)));
+            dc.DrawLine(x+10, y+50, x+30, y+50);
       }
     }
   }

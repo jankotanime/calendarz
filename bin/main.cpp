@@ -6,6 +6,8 @@
 #include <functional>
 #include <chrono>
 #include <wx/timer.h>
+#include "Event.h"
+#include <forward_list>
 
 wxIMPLEMENT_APP(MyApp);
 
@@ -13,7 +15,7 @@ struct OneTile {
   int day, month, year; 
 };
 
-void frames_paint(int width, int height, const std::tm& localTime, std::tm today, Tile& tile, Images& images, wxPanel* panel);
+void frames_paint(int width, int height, const std::tm& localTime, std::tm today, Tile& tile, Images& images, std::forward_list<Event>, wxPanel* panel);
 void dates(std::tm* localTime, wxPanel* panel);
 void edit_day_paint(int width, int height, Tile& tile, wxPanel* panel);
 Images paint_images(int width, int height, std::tm* localTime, Tile& tile, wxPanel* panel);
@@ -47,7 +49,7 @@ bool MyApp::OnInit() {
     if (tile.getDay() != 0) {
       edit_day_paint(WIDTH, HEIGHT, tile, panel);
     } else {
-      frames_paint(WIDTH, HEIGHT, *localTime, today, tile, images, panel);
+      frames_paint(WIDTH, HEIGHT, *localTime, today, tile, images, events, panel);
       dates(localTime, panel);
     }
   });
