@@ -64,6 +64,8 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
   wxPoint screenPos = wxGetMousePosition();
   wxPoint localPos = panel->ScreenToClient(screenPos);
 
+  panel->Bind(wxEVT_LEFT_DOWN, [](wxMouseEvent& event) {}); // ? Is it the best possible option to unbind mouseclick
+
   dc.SetBrush(wxBrush(wxColour(140, 160, 140)));
   dc.DrawRectangle(x_border, y_border, x_border_end-x_border, y_border_end-y_border);
 
@@ -101,16 +103,6 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
         dc.DrawRectangle(x, y, floor((width - x_border * 2) / 7.0), floor((height - y_border) / 6.0));  
         dc.DrawText(std::to_string(day), wxPoint(x+10, y+10));
       } else {
-        if (localPos.x > x+10 && localPos.x < xEnd-10 && localPos.y > y+15 && localPos.y < yEnd-15) {
-          panel->Bind(wxEVT_LEFT_DOWN, [&tile, &images, draw_day, month, year, &clicked_tile](wxMouseEvent& event) {
-            tile.changeDate(draw_day, month, year);
-            images.back->Show();
-            images.left->Hide();
-            images.right->Hide();
-          });
-          dc.SetBrush(wxBrush(wxColour(155, 175, 155)));
-          dc.DrawRectangle(x, y, floor((width - x_border * 2) / 7.0), floor((height - y_border) / 6.0));
-        }
         if (days < draw_day) {
           dc.SetTextForeground(wxColour(100, 100, 100));
           dc.DrawText(std::to_string(draw_day - days), wxPoint(x+10, y+10));
@@ -118,6 +110,16 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
           dc.SetTextForeground(wxColour(100, 100, 100));
           dc.DrawText(std::to_string(last_month.tm_mday+draw_day), wxPoint(x+10, y+10));
         } else {
+          if (localPos.x > x && localPos.x < xEnd-10 && localPos.y > y && localPos.y < yEnd-15) {
+            panel->Bind(wxEVT_LEFT_DOWN, [&tile, &images, draw_day, month, year, &clicked_tile](wxMouseEvent& event) {
+              tile.changeDate(draw_day, month, year);
+              images.back->Show();
+              images.left->Hide();
+              images.right->Hide();
+            });
+            dc.SetBrush(wxBrush(wxColour(155, 175, 155)));
+            dc.DrawRectangle(x, y, floor((width - x_border * 2) / 7.0), floor((height - y_border) / 6.0));
+          }
           dc.SetTextForeground(wxColour(10, 30, 10));
           dc.DrawText(std::to_string(draw_day), wxPoint(x+10, y+10));
         }
