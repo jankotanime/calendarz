@@ -32,13 +32,14 @@ int first_day_of_month(int year, int month) {
   return tmDate.tm_wday - 1;
 }
 
-bool event_day(std::forward_list<Event> events, int d, int m, int y) {
+int event_day(std::forward_list<Event> events, int d, int m, int y) {
+  int result = 0;
   for (auto& event : events) {
     if (event.getDay() == d && event.getMonth() == m && event.getYear() == y) {
-      return true;
+      result++;
     }
   }
-  return false;
+  return result;
 }
 
 void frames_paint(int width, int height, const std::tm& localTime, std::tm today, Tile& tile, Images& images, std::forward_list<Event> events, wxPanel* panel) {
@@ -80,12 +81,12 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
   dc.SetBrush(wxBrush(wxColour(140, 160, 140)));
   dc.DrawRectangle(x_border, y_border, x_border_end-x_border, y_border_end-y_border);
 
-  dc.SetPen(wxPen(wxColour(30, 40, 30), 5));
   dc.SetFont(wxFont(20, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
   dc.SetTextForeground(wxColour(10, 30, 10));
 
   for (int i = 0; i < 7; i++) {
     for (int j = 0; j < 6; j++) {
+      dc.SetPen(wxPen(wxColour(30, 40, 30), 5));
       int x = floor((width - x_border * 2) / 7.0) * i + x_border;
       int y = floor((height - y_border) / 6.0) * j + y_border;
       int xEnd = x + floor(width / 7.0);
@@ -135,9 +136,12 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
           dc.DrawText(std::to_string(draw_day), wxPoint(x+10, y+10));
         }
       }
-      if (event_day(events, draw_day, month, year)) {
-        dc.SetBrush(wxBrush(wxColour(200, 100, 100)));
-            dc.DrawLine(x+10, y+50, x+30, y+50);
+      int events_amount = event_day(events, draw_day, month, year);
+      if (events_amount != 0) {
+        dc.SetPen(wxPen(wxColour(100, 50, 50), 5));
+        for (int i = 0; i < events_amount; i++) {
+          dc.DrawLine(x+10, y+50+i*10, x+30, y+50+i*10);
+        }
       }
     }
   }
