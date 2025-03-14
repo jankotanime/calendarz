@@ -17,7 +17,7 @@ struct OneTile {
 
 void frames_paint(int width, int height, const std::tm& localTime, std::tm today, Tile& tile, Images& images, std::forward_list<Event>, wxPanel* panel);
 void dates(std::tm* localTime, wxPanel* panel);
-void edit_day_paint(int width, int height, Tile& tile, wxPanel* panel);
+void edit_day_paint(int width, int height, Tile& tile, std::forward_list<Event>, wxPanel* panel);
 Images paint_images(int width, int height, std::tm* localTime, Tile& tile, wxPanel* panel);
 Tile pick_tile(OneTile);
 
@@ -47,7 +47,7 @@ bool MyApp::OnInit() {
   
   panel->Bind(wxEVT_PAINT, [=](wxPaintEvent& event) {
     if (tile.getDay() != 0) {
-      edit_day_paint(WIDTH, HEIGHT, tile, panel);
+      edit_day_paint(WIDTH, HEIGHT, tile, events, panel);
     } else {
       frames_paint(WIDTH, HEIGHT, *localTime, today, tile, images, events, panel);
       dates(localTime, panel);
