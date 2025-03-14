@@ -8,7 +8,7 @@
 #include "Event.h"
 
 struct Images {
-  wxStaticBitmap* back, *left, *right; 
+  wxStaticBitmap* back, *add_event, *left, *right; 
 };
 
 std::forward_list<Event> scan_data();

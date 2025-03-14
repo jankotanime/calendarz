@@ -27,3 +27,8 @@ int Event::getMonth() {
 int Event::getYear() {
   return this->year;
 }
+
+void Event::fillDscrpt(std::string t, std::string d) {
+  this->title = t;
+  this->dscrpt = d;
+}

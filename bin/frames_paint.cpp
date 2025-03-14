@@ -12,7 +12,7 @@ struct OneTile {
 };
 
 struct Images {
-  wxStaticBitmap* back, *left, *right; 
+  wxStaticBitmap* back, *add_event, *left, *right; 
 };
 
 int first_day_of_month(int year, int month) {
@@ -37,6 +37,9 @@ int event_day(std::forward_list<Event> events, int d, int m, int y) {
   for (auto& event : events) {
     if (event.getDay() == d && event.getMonth() == m && event.getYear() == y) {
       result++;
+      if (result >= 3) {
+        break;
+      } 
     }
   }
   return result;
@@ -106,6 +109,7 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
           panel->Bind(wxEVT_LEFT_DOWN, [&tile, images, draw_day, month, year, &clicked_tile](wxMouseEvent& event) {
             tile.changeDate(draw_day, month, year);
             images.back->Show();
+            images.add_event->Show();
             images.left->Hide();
             images.right->Hide();
           });
@@ -126,6 +130,7 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
             panel->Bind(wxEVT_LEFT_DOWN, [&tile, &images, draw_day, month, year, &clicked_tile](wxMouseEvent& event) {
               tile.changeDate(draw_day, month, year);
               images.back->Show();
+              images.add_event->Show();
               images.left->Hide();
               images.right->Hide();
             });
@@ -138,7 +143,7 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
       }
       int events_amount = event_day(events, draw_day, month, year);
       if (events_amount != 0) {
-        dc.SetPen(wxPen(wxColour(100, 50, 50), 5));
+        dc.SetPen(wxPen(wxColour(160, 80, 80), 5));
         for (int i = 0; i < events_amount; i++) {
           dc.DrawLine(x+10, y+50+i*10, x+30, y+50+i*10);
         }

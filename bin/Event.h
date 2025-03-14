@@ -18,6 +18,7 @@ class Event {
   int getDay();
   int getMonth();
   int getYear();
+  void fillDscrpt(std::string t, std::string d);
 };
 
 #endif

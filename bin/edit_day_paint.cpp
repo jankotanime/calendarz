@@ -44,7 +44,6 @@ void edit_day_paint(int width, int height, Tile& tile, std::forward_list<Event> 
     }
   }
 
-
   dc.DrawLine(x_border, y_border, x_border_end, y_border);
   dc.DrawLine(x_border, y_border, x_border, y_border_end);
   dc.DrawLine(x_border, y_border_end, x_border_end, y_border_end);

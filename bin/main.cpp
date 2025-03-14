@@ -18,7 +18,7 @@ struct OneTile {
 void frames_paint(int width, int height, const std::tm& localTime, std::tm today, Tile& tile, Images& images, std::forward_list<Event>, wxPanel* panel);
 void dates(std::tm* localTime, wxPanel* panel);
 void edit_day_paint(int width, int height, Tile& tile, std::forward_list<Event>, wxPanel* panel);
-Images paint_images(int width, int height, std::tm* localTime, Tile& tile, wxPanel* panel);
+Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::forward_list<Event>&, wxPanel* panel);
 Tile pick_tile(OneTile);
 
 bool MyApp::OnInit() {
@@ -35,7 +35,7 @@ bool MyApp::OnInit() {
   localTime->tm_year += 1900;
   const std::tm today = *localTime;
 
-  images = paint_images(WIDTH, HEIGHT, localTime, tile, panel);
+  images = paint_images(WIDTH, HEIGHT, localTime, tile, events, panel);
   
   // ? Changeable date 
   // std::tm tmDate = {};
