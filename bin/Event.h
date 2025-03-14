@@ -4,6 +4,11 @@
 #include <wx/wx.h>
 #include <iostream>
 
+struct OneEvent {
+  std::string title, dscrpt;
+  int day, month, year;
+};
+
 class Event {
   private:
   std::string title;
@@ -19,6 +24,7 @@ class Event {
   int getMonth();
   int getYear();
   void fillDscrpt(std::string t, std::string d);
+  OneEvent get_event_as_struct();
 };
 
 #endif

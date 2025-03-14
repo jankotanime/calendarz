@@ -9,6 +9,8 @@ struct Images {
   wxStaticBitmap* back, *add_event, *left, *right; 
 };
 
+void add_to_data(OneEvent);
+
 std::string get_month(int n) {
   std::forward_list<std::string> months = {"Styczen", "Luty", "Marzec", "Kwiecien", "Maj", "Czerwiec", "Lipiec", "Sierpien", "Wrzesien", "Pazdziernik", "Listopad", "Grudzien"};
   for (int i = 0; i < n; i++) {
@@ -53,13 +55,14 @@ Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::
   });
 
 
-  add_event->Bind(wxEVT_LEFT_DOWN, [&tile, &events, title, dscrt, accept, panel](wxMouseEvent&) {
+  add_event->Bind(wxEVT_LEFT_DOWN, [&tile, &events, add_event, title, dscrt, accept, panel](wxMouseEvent&) {
     accept->Show();
     title->Show();
     dscrt->Show();
+    add_event->Hide();
     title->SetValue("");
     dscrt->SetValue("");
-    accept->Bind(wxEVT_LEFT_DOWN, [title, dscrt, accept, &tile, &events](wxMouseEvent&) {
+    accept->Bind(wxEVT_LEFT_DOWN, [title, dscrt, add_event, accept, &tile, &events](wxMouseEvent&) {
       Event event = Event(title->GetValue().ToStdString(), dscrt->GetValue().ToStdString(), tile.getDay(), tile.getMonth(), tile.getYear());
       events.push_front(event);
       title->SetValue("");
@@ -67,6 +70,8 @@ Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::
       title->Hide();
       dscrt->Hide();
       accept->Hide();
+      add_event->Show();
+      add_to_data(event.get_event_as_struct());
     });
   });
 

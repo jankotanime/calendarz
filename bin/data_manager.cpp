@@ -5,13 +5,6 @@
 #include <forward_list>
 #include "Event.h"
 
-struct OneEvent
-{
-  std::string title, dscrpt;
-  int day, month, year;
-};
-
-
 std::forward_list<Event> scan_data() {
   std::ifstream file("data/events.csv");
 
@@ -49,4 +42,18 @@ std::forward_list<Event> scan_data() {
   file.close();
 
   return events;
+}
+
+void add_to_data(OneEvent event) {
+    std::ofstream file("data/events.csv", std::ios::app);
+    if (!file) {
+        std::cerr << "Nie można otworzyć pliku!\n";
+        return;
+    }
+
+    file << event.title << ";" << event.title 
+    << ";" << std::to_string(event.day) 
+    << ";" << std::to_string(event.month) 
+    << ";" << std::to_string(event.year);
+    file.close();
 }

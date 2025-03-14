@@ -32,3 +32,7 @@ void Event::fillDscrpt(std::string t, std::string d) {
   this->title = t;
   this->dscrpt = d;
 }
+
+OneEvent Event::get_event_as_struct() {
+  return {this->title, this->dscrpt, this->day, this->month, this->year};
+}
