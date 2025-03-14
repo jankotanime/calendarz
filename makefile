@@ -4,7 +4,7 @@ LDFLAGS = `wx-config --libs`
 
 SRC = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
 OBJ = $(SRC:src/%.cpp=build/%.o)
-EXE = bin/calendarz.exe
+EXE = bin/calendarz
 
 $(EXE): directories $(OBJ)
 	$(CC) $(OBJ) $(LDFLAGS) -o $(EXE)

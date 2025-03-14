@@ -10,42 +10,17 @@
 struct OneTile {
   int day, month, year; 
 };
-
 struct Images {
   wxStaticBitmap* back, *add_event, *left, *right; 
 };
 
-int first_day_of_month(int year, int month) {
-  std::tm tmDate = {};
-  tmDate.tm_year = year;
-  tmDate.tm_mon = month;
-  tmDate.tm_mday = 1;
+int first_day_of_month(int, int);
 
-  std::time_t t_date = std::mktime(&tmDate);
-  
-  if (tmDate.tm_wday == 0) {
-    return 6;
-  } 
-  if (tmDate.tm_wday == 1) {
-    return 7;
-  }
-  return tmDate.tm_wday - 1;
-}
+int event_day(std::forward_list<Event>, int, int, int);
 
-int event_day(std::forward_list<Event> events, int d, int m, int y) {
-  int result = 0;
-  for (auto& event : events) {
-    if (event.getDay() == d && event.getMonth() == m && event.getYear() == y) {
-      result++;
-      if (result >= 3) {
-        break;
-      } 
-    }
-  }
-  return result;
-}
+void pick_day_handler(Tile&, Images, int, int, int);
 
-void frames_paint(int width, int height, const std::tm& localTime, std::tm today, Tile& tile, Images& images, std::forward_list<Event> events, wxPanel* panel) {
+void calander_paint(int width, int height, const std::tm& localTime, std::tm today, Tile& tile, Images& images, std::forward_list<Event> events, wxPanel* panel) {
   OneTile clicked_tile = {0, 0, 0};
   std::tm localTimeCopy = localTime;
   localTimeCopy.tm_year + 1900;
@@ -54,14 +29,14 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
   int month = localTimeCopy.tm_mon;
   int day = localTimeCopy.tm_mday;
   int week_day = localTimeCopy.tm_wday;
-  
   int first_day = first_day_of_month(year, month);
   
   std::tm last_month = localTimeCopy;
-  last_month.tm_mday = 1;
-  last_month.tm_mday -= 1;
+  last_month.tm_mday = 0;
+  last_month.tm_hour = 0;
+  last_month.tm_min = 0;
+  last_month.tm_sec = 0;
   std::mktime(&last_month);
-  int mday = last_month.tm_mday;
 
   std::tm next_month = localTimeCopy;
   next_month.tm_mon += 1;
@@ -81,7 +56,6 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
 
   dc.SetBrush(wxBrush(wxColour(140, 160, 140)));
   dc.DrawRectangle(x_border, y_border, x_border_end-x_border, y_border_end-y_border);
-
   dc.SetFont(wxFont(20, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
   dc.SetTextForeground(wxColour(10, 30, 10));
 
@@ -92,6 +66,7 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
       int y = floor((height - y_border) / 6.0) * j + y_border;
       int xEnd = x + floor(width / 7.0);
       int yEnd = y + floor(height / 6.0);
+      // Draw cell
       dc.DrawLine(x, y, xEnd-10, y);
       dc.DrawLine(x, y, x, yEnd-15);
       int draw_day;
@@ -102,14 +77,11 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
         draw_day = (i + j * 7 - first_day - 5);
       }
       if (draw_day == day && year == today.tm_year && month == today.tm_mon) {
+        // Painting for today
         if (localPos.x > x && localPos.x < xEnd-10 && localPos.y > y && localPos.y < yEnd-15) {
           dc.SetBrush(wxBrush(wxColour(200, 220, 200)));
-          panel->Bind(wxEVT_LEFT_DOWN, [&tile, images, draw_day, month, year, &clicked_tile](wxMouseEvent& event) {
-            tile.changeDate(draw_day, month, year);
-            images.back->Show();
-            images.add_event->Show();
-            images.left->Hide();
-            images.right->Hide();
+          panel->Bind(wxEVT_LEFT_DOWN, [&tile, images, draw_day, month, year] (wxMouseEvent& event) {
+            pick_day_handler(tile, images, draw_day, month, year);
           });
         } else {
           dc.SetBrush(wxBrush(wxColour(180, 200, 180)));
@@ -118,19 +90,18 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
         dc.DrawText(std::to_string(day), wxPoint(x+10, y+10));
       } else {
         if (days < draw_day) {
+          // Painting for days in next month
           dc.SetTextForeground(wxColour(100, 100, 100));
           dc.DrawText(std::to_string(draw_day - days), wxPoint(x+10, y+10));
         } else if (draw_day < 1) {
+          // Painting for days in last month
           dc.SetTextForeground(wxColour(100, 100, 100));
           dc.DrawText(std::to_string(last_month.tm_mday+draw_day), wxPoint(x+10, y+10));
         } else {
+          // Painting for days in picked month
           if (localPos.x > x && localPos.x < xEnd-10 && localPos.y > y && localPos.y < yEnd-15) {
-            panel->Bind(wxEVT_LEFT_DOWN, [&tile, &images, draw_day, month, year, &clicked_tile](wxMouseEvent& event) {
-              tile.changeDate(draw_day, month, year);
-              images.back->Show();
-              images.add_event->Show();
-              images.left->Hide();
-              images.right->Hide();
+            panel->Bind(wxEVT_LEFT_DOWN, [&tile, images, draw_day, month, year] (wxMouseEvent& event) {
+              pick_day_handler(tile, images, draw_day, month, year);
             });
             dc.SetBrush(wxBrush(wxColour(155, 175, 155)));
             dc.DrawRectangle(x, y, floor((width - x_border * 2) / 7.0), floor((height - y_border) / 6.0));
@@ -139,6 +110,7 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
           dc.DrawText(std::to_string(draw_day), wxPoint(x+10, y+10));
         }
       }
+      // Painting info about event
       int events_amount = event_day(events, draw_day, month, year);
       if (events_amount != 0) {
         dc.SetPen(wxPen(wxColour(160, 80, 80), 5));
@@ -149,6 +121,7 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
     }
   }
 
+  // Cursor position and borders
   dc.SetPen(wxPen(wxColour(0, 0, 0), 1));
   dc.SetFont(wxFont(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
   dc.DrawText(std::to_string(localPos.x), wxPoint(5, 5));

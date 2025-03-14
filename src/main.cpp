@@ -15,7 +15,7 @@ struct OneTile {
   int day, month, year; 
 };
 
-void frames_paint(int, int, const std::tm&, std::tm, Tile&, Images&, std::forward_list<Event>, wxPanel*);
+void calander_paint(int, int, const std::tm&, std::tm, Tile&, Images&, std::forward_list<Event>, wxPanel*);
 void dates_change_paint(std::tm*, wxPanel*);
 void edit_day_paint(int, int, Tile&, std::forward_list<Event>, wxPanel*);
 Images paint_images(int, int, std::tm*, Tile&, std::forward_list<Event>&, wxPanel*);
@@ -51,7 +51,7 @@ bool MyApp::OnInit() {
     if (tile.getDay() != 0) {
       edit_day_paint(WIDTH, HEIGHT, tile, events, panel);
     } else {
-      frames_paint(WIDTH, HEIGHT, *localTime, today, tile, images, events, panel);
+      calander_paint(WIDTH, HEIGHT, *localTime, today, tile, images, events, panel);
       dates_change_paint(localTime, panel);
     }
   });
