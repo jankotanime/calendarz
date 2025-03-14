@@ -1,12 +1,10 @@
-#include "Tile.h"
-#include <wx/wx.h>
-#include "MyApp.h"
 #include <iostream>
 #include <math.h>
+#include <wx/wx.h>
+#include "../../include/Tile.h"
+#include "../../include/MyApp.h"
 
-Tile::Tile(int d, int m, int y) : day(d), month(m), year(y) {
-  std::cout << "sigma" << std::endl;
-};
+Tile::Tile(int d, int m, int y) : day(d), month(m), year(y) {};
 
 void Tile::myDate() {
   std::cout << this->day << std::endl;

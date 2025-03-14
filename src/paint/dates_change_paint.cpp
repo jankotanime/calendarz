@@ -1,10 +1,10 @@
+#include <iostream>
 #include <chrono>
 #include <wx/wx.h>
-#include <iostream>
 
-std::string get_month(int n);
+std::string get_month(int);
 
-void dates(std::tm* localTime, wxPanel* panel) {
+void dates_change_paint(std::tm* localTime, wxPanel* panel) {
   wxPaintDC dc(panel);
 
   dc.SetFont(wxFont(20, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));

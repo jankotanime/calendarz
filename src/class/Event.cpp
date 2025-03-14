@@ -1,12 +1,11 @@
-#include "Event.h"
-#include <wx/wx.h>
-#include "MyApp.h"
 #include <iostream>
 #include <math.h>
+#include <wx/wx.h>
+#include "../../include/Event.h"
+#include "../../include/MyApp.h"
 
-Event::Event(std::string t, std::string dr, int d, int m, int y) : title(t), dscrpt(dr), day(d), month(m), year(y) {
-  std::cout << "event" << std::endl;
-};
+Event::Event(std::string t, std::string dr, int d, int m, int y) 
+: title(t), dscrpt(dr), day(d), month(m), year(y) {};
 
 std::string Event::getTitle() {
   return this->title;

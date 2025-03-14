@@ -3,10 +3,10 @@
 #include <sstream>
 #include <vector>
 #include <forward_list>
-#include "Event.h"
+#include "../include/Event.h"
 
 std::forward_list<Event> scan_data() {
-  std::ifstream file("data/events.csv");
+  std::ifstream file("src/data/events.csv");
 
   std::forward_list<Event> events;
 
@@ -45,7 +45,7 @@ std::forward_list<Event> scan_data() {
 }
 
 void add_to_data(OneEvent event) {
-    std::ofstream file("data/events.csv", std::ios::app);
+    std::ofstream file("src/data/events.csv", std::ios::app);
     if (!file) {
         std::cerr << "Nie można otworzyć pliku!\n";
         return;
@@ -54,6 +54,6 @@ void add_to_data(OneEvent event) {
     file << event.title << ";" << event.title 
     << ";" << std::to_string(event.day) 
     << ";" << std::to_string(event.month) 
-    << ";" << std::to_string(event.year);
+    << ";" << std::to_string(event.year) << "\n";
     file.close();
 }

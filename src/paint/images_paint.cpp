@@ -1,9 +1,10 @@
 #include <forward_list>
 #include <iostream>
-#include "Tile.h"
 #include <iostream>
 #include <chrono>
-#include "Event.h"
+#include <wx/wx.h>
+#include "../../include/Tile.h"
+#include "../../include/Event.h"
 
 struct Images {
   wxStaticBitmap* back, *add_event, *left, *right; 
@@ -11,29 +12,20 @@ struct Images {
 
 void add_to_data(OneEvent);
 
-std::string get_month(int n) {
-  std::forward_list<std::string> months = {"Styczen", "Luty", "Marzec", "Kwiecien", "Maj", "Czerwiec", "Lipiec", "Sierpien", "Wrzesien", "Pazdziernik", "Listopad", "Grudzien"};
-  for (int i = 0; i < n; i++) {
-    months.pop_front();
-  }
-  std::string result = months.front();
-  return result;
-}
-
 Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::forward_list<Event>& events, wxPanel* panel) {
-  wxBitmap image_go_back("img/return.jpg", wxBITMAP_TYPE_JPEG);
+  wxBitmap image_go_back("src/img/return.jpg", wxBITMAP_TYPE_JPEG);
   wxStaticBitmap* go_back = new wxStaticBitmap(panel, wxID_ANY, image_go_back, wxPoint(1000, 800), wxSize(40, 40));
 
-  wxBitmap image_arrow_left("img/arrow_left.png", wxBITMAP_TYPE_JPEG);
+  wxBitmap image_arrow_left("src/img/arrow_left.png", wxBITMAP_TYPE_JPEG);
   wxStaticBitmap* arrow_left = new wxStaticBitmap(panel, wxID_ANY, image_arrow_left, wxPoint(20, 20), wxSize(82, 20));
 
-  wxBitmap image_arrow_right("img/arrow_right.png", wxBITMAP_TYPE_JPEG);
+  wxBitmap image_arrow_right("src/img/arrow_right.png", wxBITMAP_TYPE_JPEG);
   wxStaticBitmap* arrow_right = new wxStaticBitmap(panel, wxID_ANY, image_arrow_right, wxPoint(1000, 20), wxSize(82, 20));
 
-  wxBitmap image_add_event("img/add_event.jpg", wxBITMAP_TYPE_JPEG);
+  wxBitmap image_add_event("src/img/add_event.jpg", wxBITMAP_TYPE_JPEG);
   wxStaticBitmap* add_event = new wxStaticBitmap(panel, wxID_ANY, image_add_event, wxPoint(1000, 20), wxSize(40, 40));
 
-  wxBitmap image_accept("img/accept.jpg", wxBITMAP_TYPE_JPEG);
+  wxBitmap image_accept("src/img/accept.jpg", wxBITMAP_TYPE_JPEG);
   wxStaticBitmap* accept = new wxStaticBitmap(panel, wxID_ANY, image_accept, wxPoint(800, 400), wxSize(40, 40));
   
   wxTextCtrl* title = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(20, 20), wxSize(100, 30));
@@ -63,15 +55,18 @@ Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::
     title->SetValue("");
     dscrt->SetValue("");
     accept->Bind(wxEVT_LEFT_DOWN, [title, dscrt, add_event, accept, &tile, &events](wxMouseEvent&) {
-      Event event = Event(title->GetValue().ToStdString(), dscrt->GetValue().ToStdString(), tile.getDay(), tile.getMonth(), tile.getYear());
-      events.push_front(event);
-      title->SetValue("");
-      dscrt->SetValue("");
-      title->Hide();
-      dscrt->Hide();
-      accept->Hide();
-      add_event->Show();
-      add_to_data(event.get_event_as_struct());
+      if (title->GetValue().ToStdString() != "" && dscrt->GetValue().ToStdString() != "") {
+        Event event = Event(title->GetValue().ToStdString(), dscrt->GetValue().ToStdString(), 
+        tile.getDay(), tile.getMonth(), tile.getYear());
+        events.push_front(event);
+        title->SetValue("");
+        dscrt->SetValue("");
+        title->Hide();
+        dscrt->Hide();
+        accept->Hide();
+        add_event->Show();
+        add_to_data(event.get_event_as_struct());
+      }
     });
   });
 

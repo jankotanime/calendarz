@@ -1,13 +1,13 @@
-#include <wx/wx.h>
-#include "MyApp.h"
-#include "Tile.h"
 #include <iostream>
 #include <thread>
 #include <functional>
 #include <chrono>
-#include <wx/timer.h>
-#include "Event.h"
 #include <forward_list>
+#include <wx/wx.h>
+#include <wx/timer.h>
+#include "../include/MyApp.h"
+#include "../include/Event.h"
+#include "../include/Tile.h"
 
 wxIMPLEMENT_APP(MyApp);
 
@@ -15,10 +15,10 @@ struct OneTile {
   int day, month, year; 
 };
 
-void frames_paint(int width, int height, const std::tm& localTime, std::tm today, Tile& tile, Images& images, std::forward_list<Event>, wxPanel* panel);
-void dates(std::tm* localTime, wxPanel* panel);
-void edit_day_paint(int width, int height, Tile& tile, std::forward_list<Event>, wxPanel* panel);
-Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::forward_list<Event>&, wxPanel* panel);
+void frames_paint(int, int, const std::tm&, std::tm, Tile&, Images&, std::forward_list<Event>, wxPanel*);
+void dates_change_paint(std::tm*, wxPanel*);
+void edit_day_paint(int, int, Tile&, std::forward_list<Event>, wxPanel*);
+Images paint_images(int, int, std::tm*, Tile&, std::forward_list<Event>&, wxPanel*);
 Tile pick_tile(OneTile);
 
 bool MyApp::OnInit() {
@@ -46,11 +46,13 @@ bool MyApp::OnInit() {
   // std::tm* localTime = std::localtime(&time);
   
   panel->Bind(wxEVT_PAINT, [=](wxPaintEvent& event) {
+    panel->Bind(wxEVT_LEFT_DOWN, [](wxMouseEvent& event) {}); 
+    // ? Is it the best possible option to unbind mouseclick
     if (tile.getDay() != 0) {
       edit_day_paint(WIDTH, HEIGHT, tile, events, panel);
     } else {
       frames_paint(WIDTH, HEIGHT, *localTime, today, tile, images, events, panel);
-      dates(localTime, panel);
+      dates_change_paint(localTime, panel);
     }
   });
 
@@ -58,7 +60,7 @@ bool MyApp::OnInit() {
     panel->Refresh();
   }, timer->GetId());
 
-  timer->Start(floor(1000/60));
+  timer->Start(floor(1000/60)); // ? FPS
   frame->Show(true);
 
   return true;

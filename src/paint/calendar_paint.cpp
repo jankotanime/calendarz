@@ -3,9 +3,9 @@
 #include <math.h>
 #include <chrono>
 #include <ctime>
-#include "Tile.h"
-#include "Event.h"
 #include <forward_list>
+#include "../../include/Tile.h"
+#include "../../include/Event.h"
 
 struct OneTile {
   int day, month, year; 
@@ -78,8 +78,6 @@ void frames_paint(int width, int height, const std::tm& localTime, std::tm today
   wxPaintDC dc(panel);
   wxPoint screenPos = wxGetMousePosition();
   wxPoint localPos = panel->ScreenToClient(screenPos);
-
-  panel->Bind(wxEVT_LEFT_DOWN, [](wxMouseEvent& event) {}); // ? Is it the best possible option to unbind mouseclick
 
   dc.SetBrush(wxBrush(wxColour(140, 160, 140)));
   dc.DrawRectangle(x_border, y_border, x_border_end-x_border, y_border_end-y_border);

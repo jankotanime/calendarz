@@ -3,11 +3,11 @@
 #include <math.h>
 #include <chrono>
 #include <ctime>
-#include "Tile.h"
 #include <forward_list>
-#include "Event.h"
+#include "../../include/Tile.h"
+#include "../../include/Event.h"
 
-std::string get_month(int n);
+std::string get_month(int);
 
 void edit_day_paint(int width, int height, Tile& tile, std::forward_list<Event> events, wxPanel* panel) {
   int x_border = 20;
