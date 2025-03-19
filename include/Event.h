@@ -7,6 +7,7 @@
 struct OneEvent {
   std::string title, dscrpt;
   int day, month, year;
+  bool del;
 };
 
 class Event {
@@ -16,6 +17,7 @@ class Event {
   int day;
   int month;
   int year;
+  bool del;
   public:
   Event(std::string title, std::string dscrpt, int day, int month, int year);
   std::string getTitle();
@@ -24,6 +26,8 @@ class Event {
   int getMonth();
   int getYear();
   void fillDscrpt(std::string t, std::string d);
+  void delEvent();
+  int wantToDel();
   OneEvent get_event_as_struct();
 };
 

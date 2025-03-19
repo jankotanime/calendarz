@@ -43,6 +43,16 @@ void edit_day_paint(int width, int height, Tile& tile, std::forward_list<Event> 
       dc.DrawText(event.getTitle(), wxPoint(50, 150 + line*60));
       dc.SetFont(wxFont(15, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
       dc.DrawText(event.getDscrpt(), wxPoint(50, 180 + line*60));
+      if (event.wantToDel() == 1) {
+        dc.DrawText("Na pewno?", wxPoint(500, 150 + line*60));
+      } else {
+        dc.DrawText("Usun", wxPoint(500, 150 + line*60));
+      }
+      if (localPos.x > 500 && localPos.x < 550 && localPos.y > 150 + line*60 && localPos.y < 180 + line*60) {
+        panel->Bind(wxEVT_LEFT_DOWN, [&event, &events] (wxMouseEvent& e) {
+          event.delEvent();
+        });
+      }
       dc.DrawLine(50, 205 + line*60, 200, 205 + line*60);
       line++;
     }
