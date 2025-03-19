@@ -26,7 +26,7 @@ class Event {
   int getMonth();
   int getYear();
   void fillDscrpt(std::string t, std::string d);
-  void delEvent();
+  void delEvent(std::forward_list<Event> events);
   void cancelDelEvent();
   bool wantToDel();
   OneEvent get_event_as_struct();

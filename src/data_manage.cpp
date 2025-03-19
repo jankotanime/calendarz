@@ -57,3 +57,26 @@ void add_to_data(OneEvent event) {
     << ";" << std::to_string(event.year) << "\n";
     file.close();
 }
+
+void remove_from_data(std::forward_list<Event> events) {
+  std::ofstream file("src/data/events.csv", std::ios::trunc);
+  if (!file) {
+      std::cerr << "Nie można otworzyć pliku!\n";
+      return;
+  }
+
+  file << "Title;Description;Day;Month;Year" << "\n";
+
+  for (auto& event : events) {
+    if (event.getDay() != 0 && event.getMonth() != 0 && event.getYear() != 0) {
+      file << event.getTitle() << ";" << event.getDscrpt()
+      << ";" << std::to_string(event.getDay()) 
+      << ";" << std::to_string(event.getMonth()) 
+      << ";" << std::to_string(event.getYear()) << "\n";
+      file.close();
+    }
+  }
+  
+
+
+}

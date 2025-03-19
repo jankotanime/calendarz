@@ -1,4 +1,5 @@
 #include <forward_list>
+#include <list>
 #include <iostream>
 #include <chrono>
 #include <wx/wx.h>
@@ -10,23 +11,26 @@ struct Images {
 };
 
 struct EventDeleteImage {
-  Event event;
+  Event* event;
   wxStaticBitmap* img;
 };
 
-std::forward_list<EventDeleteImage> deletes;
+std::list<EventDeleteImage> deletes;
 
 void add_to_data(OneEvent);
 
-void showDeleteImages(std::forward_list<EventDeleteImage>& deletes, Tile tile) {
+void showDeleteImages(std::list<EventDeleteImage>& deletes, Tile tile) {
+  int line = 0;
   for (EventDeleteImage del : deletes) {
-    if (del.event.getDay() == tile.getDay() && del.event.getMonth() == tile.getMonth() && del.event.getYear() == tile.getYear()) {
+    if (del.event->getDay() == tile.getDay() && del.event->getMonth() == tile.getMonth() && del.event->getYear() == tile.getYear()) {
       del.img -> Show();
+      del.img -> Move(500, 160+line*60);
+      line++;
     }
   }
 }
 
-void hideDeleteImages(std::forward_list<EventDeleteImage> &deletes, Tile tile) {
+void hideDeleteImages(std::list<EventDeleteImage> &deletes, Tile tile) {
   for (EventDeleteImage& del : deletes) {
     del.img -> Hide();
   }
@@ -56,14 +60,20 @@ Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::
   
   for (auto& event : events) {
     wxBitmap image_delete("src/img/delete.png", wxBITMAP_TYPE_JPEG);
-    wxStaticBitmap* new_delete = new wxStaticBitmap(panel, wxID_ANY, image_delete, wxPoint(400, 400), wxSize(400, 400));
-    deletes.push_front({event, new_delete});
-    new_delete->Bind(wxEVT_LEFT_DOWN, [&event](wxMouseEvent&) {
-      event.delEvent();
+    wxStaticBitmap* new_delete = new wxStaticBitmap(panel, wxID_ANY, image_delete, wxPoint(400, 400), wxSize(32, 32));
+    deletes.push_back({&event, new_delete});
+    new_delete->Bind(wxEVT_LEFT_DOWN, [&event, &events, new_delete](wxMouseEvent&) {
+      event.delEvent(events);
+      if (event.getDay() == 0) {
+        new_delete->Hide();
+      }
     });
 
-    new_delete->Bind(wxEVT_SHOW, [&event](wxShowEvent&) {
+    new_delete->Bind(wxEVT_SHOW, [&event, new_delete, &tile](wxShowEvent&) {
       event.cancelDelEvent();
+      if (!(new_delete->IsShown())) {
+        showDeleteImages(deletes, tile);
+      }
     });
 
     new_delete->Hide();

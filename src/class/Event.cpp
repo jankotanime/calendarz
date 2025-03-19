@@ -1,8 +1,11 @@
 #include <iostream>
 #include <math.h>
 #include <wx/wx.h>
+#include "forward_list"
 #include "../../include/Event.h"
 #include "../../include/MyApp.h"
+
+void remove_from_data(std::forward_list<Event>);
 
 Event::Event(std::string t, std::string dr, int d, int m, int y) 
 : title(t), dscrpt(dr), day(d), month(m), year(y), del(false) {};
@@ -32,11 +35,12 @@ void Event::fillDscrpt(std::string t, std::string d) {
   this->dscrpt = d;
 }
 
-void Event::delEvent() {
+void Event::delEvent(std::forward_list<Event> events) {
   if (this->del == true) {
     this->day = 0;
     this->month = 0;
     this->year = 0;
+    remove_from_data(events);
   } else {
     this->del = true;
   }
