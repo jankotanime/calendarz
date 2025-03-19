@@ -27,7 +27,8 @@ class Event {
   int getYear();
   void fillDscrpt(std::string t, std::string d);
   void delEvent();
-  int wantToDel();
+  void cancelDelEvent();
+  bool wantToDel();
   OneEvent get_event_as_struct();
 };
 

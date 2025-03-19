@@ -62,3 +62,4 @@ void pick_day_handler(Tile& tile, Images images, int draw_day, int month, int ye
   images.left->Hide();
   images.right->Hide();
 };
+

@@ -5,7 +5,7 @@
 #include "../../include/MyApp.h"
 
 Event::Event(std::string t, std::string dr, int d, int m, int y) 
-: title(t), dscrpt(dr), day(d), month(m), year(y), del(0) {};
+: title(t), dscrpt(dr), day(d), month(m), year(y), del(false) {};
 
 std::string Event::getTitle() {
   return this->title;
@@ -33,14 +33,20 @@ void Event::fillDscrpt(std::string t, std::string d) {
 }
 
 void Event::delEvent() {
-  if (this->del == 1) {
-    this->del = 2;
+  if (this->del == true) {
+    this->day = 0;
+    this->month = 0;
+    this->year = 0;
   } else {
-    this->del = 1;
+    this->del = true;
   }
 }
 
-int Event::wantToDel() {
+void Event::cancelDelEvent() {
+  this->del = false;
+}
+
+bool Event::wantToDel() {
   return this->del;
 }
 

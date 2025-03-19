@@ -9,7 +9,28 @@ struct Images {
   wxStaticBitmap* back, *add_event, *left, *right; 
 };
 
+struct EventDeleteImage {
+  Event event;
+  wxStaticBitmap* img;
+};
+
+std::forward_list<EventDeleteImage> deletes;
+
 void add_to_data(OneEvent);
+
+void showDeleteImages(std::forward_list<EventDeleteImage>& deletes, Tile tile) {
+  for (EventDeleteImage del : deletes) {
+    if (del.event.getDay() == tile.getDay() && del.event.getMonth() == tile.getMonth() && del.event.getYear() == tile.getYear()) {
+      del.img -> Show();
+    }
+  }
+}
+
+void hideDeleteImages(std::forward_list<EventDeleteImage> &deletes, Tile tile) {
+  for (EventDeleteImage& del : deletes) {
+    del.img -> Hide();
+  }
+}
 
 Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::forward_list<Event>& events, wxPanel* panel) {
   wxBitmap image_go_back("src/img/return.png", wxBITMAP_TYPE_JPEG);
@@ -33,11 +54,34 @@ Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::
   title->SetFont(font);
   dscrt->SetFont(font);
   
+  for (auto& event : events) {
+    wxBitmap image_delete("src/img/delete.png", wxBITMAP_TYPE_JPEG);
+    wxStaticBitmap* new_delete = new wxStaticBitmap(panel, wxID_ANY, image_delete, wxPoint(400, 400), wxSize(400, 400));
+    deletes.push_front({event, new_delete});
+    new_delete->Bind(wxEVT_LEFT_DOWN, [&event](wxMouseEvent&) {
+      event.delEvent();
+    });
+
+    new_delete->Bind(wxEVT_SHOW, [&event](wxShowEvent&) {
+      event.cancelDelEvent();
+    });
+
+    new_delete->Hide();
+  }
+  
   title->Hide();
   dscrt->Hide();
   accept->Hide();
   go_back->Hide();
   add_event->Hide();
+
+  go_back->Bind(wxEVT_SHOW, [go_back, &tile](wxShowEvent) {
+    if (go_back->IsShown()) {
+      showDeleteImages(deletes, tile);
+    } else {
+      hideDeleteImages(deletes, tile);
+    }
+  });
 
   go_back->Bind(wxEVT_LEFT_DOWN, [&tile, title, dscrt, accept, go_back, arrow_left, arrow_right, add_event](wxMouseEvent&) {
     title->Hide();
