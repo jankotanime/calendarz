@@ -5,8 +5,6 @@
 #include "../../include/Event.h"
 #include "../../include/MyApp.h"
 
-void remove_from_data(std::forward_list<Event>);
-
 Event::Event(std::string t, std::string dr, int d, int m, int y) 
 : title(t), dscrpt(dr), day(d), month(m), year(y), del(false) {};
 
@@ -40,7 +38,8 @@ void Event::delEvent(std::forward_list<Event> events) {
     this->day = 0;
     this->month = 0;
     this->year = 0;
-    remove_from_data(events);
+    this->title = "";
+    this->dscrpt = "";
   } else {
     this->del = true;
   }

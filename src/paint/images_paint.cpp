@@ -17,12 +17,15 @@ struct EventDeleteImage {
 
 std::list<EventDeleteImage> deletes;
 
+void remove_from_data(std::forward_list<Event>);
 void add_to_data(OneEvent);
 
 void showDeleteImages(std::list<EventDeleteImage>& deletes, Tile tile) {
   int line = 0;
   for (EventDeleteImage del : deletes) {
-    if (del.event->getDay() == tile.getDay() && del.event->getMonth() == tile.getMonth() && del.event->getYear() == tile.getYear()) {
+    del.event->cancelDelEvent();
+    if (del.event->getDay() == tile.getDay() && del.event->getMonth() == tile.getMonth() 
+    && del.event->getYear() == tile.getYear() && del.event->getTitle() != "") {
       del.img -> Show();
       del.img -> Move(500, 160+line*60);
       line++;
@@ -30,9 +33,37 @@ void showDeleteImages(std::list<EventDeleteImage>& deletes, Tile tile) {
   }
 }
 
-void hideDeleteImages(std::list<EventDeleteImage> &deletes, Tile tile) {
+void hideDeleteImages(std::list<EventDeleteImage> &deletes) {
   for (EventDeleteImage& del : deletes) {
+    del.event->cancelDelEvent();
     del.img -> Hide();
+  } 
+}
+
+void paint_delete_images(std::forward_list<Event>& events, Tile& tile, wxPanel* panel) {
+  for (auto& del : deletes) {
+    del.img->Destroy();
+  }
+  deletes = {};
+  for (auto& event : events) {
+    wxBitmap image_delete("src/img/delete.png", wxBITMAP_TYPE_JPEG);
+    wxStaticBitmap* new_delete = new wxStaticBitmap(panel, wxID_ANY, image_delete, wxPoint(400, 400), wxSize(32, 32));
+    deletes.push_back({&event, new_delete});
+    new_delete->Bind(wxEVT_LEFT_DOWN, [&event, &events, new_delete](wxMouseEvent&) {
+      event.delEvent(events);
+      if (event.getDay() == 0) {
+        new_delete->Hide();
+      }
+      remove_from_data(events);
+    });
+
+    new_delete->Bind(wxEVT_SHOW, [&event, new_delete, &tile](wxShowEvent&) {
+      if (!(new_delete->IsShown())) {
+        showDeleteImages(deletes, tile);
+      }
+    });
+
+    new_delete->Hide();
   }
 }
 
@@ -58,26 +89,7 @@ Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::
   title->SetFont(font);
   dscrt->SetFont(font);
   
-  for (auto& event : events) {
-    wxBitmap image_delete("src/img/delete.png", wxBITMAP_TYPE_JPEG);
-    wxStaticBitmap* new_delete = new wxStaticBitmap(panel, wxID_ANY, image_delete, wxPoint(400, 400), wxSize(32, 32));
-    deletes.push_back({&event, new_delete});
-    new_delete->Bind(wxEVT_LEFT_DOWN, [&event, &events, new_delete](wxMouseEvent&) {
-      event.delEvent(events);
-      if (event.getDay() == 0) {
-        new_delete->Hide();
-      }
-    });
-
-    new_delete->Bind(wxEVT_SHOW, [&event, new_delete, &tile](wxShowEvent&) {
-      event.cancelDelEvent();
-      if (!(new_delete->IsShown())) {
-        showDeleteImages(deletes, tile);
-      }
-    });
-
-    new_delete->Hide();
-  }
+  paint_delete_images(events, tile, panel);
   
   title->Hide();
   dscrt->Hide();
@@ -89,7 +101,6 @@ Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::
     if (go_back->IsShown()) {
       showDeleteImages(deletes, tile);
     } else {
-      hideDeleteImages(deletes, tile);
     }
   });
 
@@ -102,6 +113,7 @@ Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::
     arrow_left->Show();
     arrow_right->Show();
     tile.changeDate(0, 0, 0);
+    hideDeleteImages(deletes);
   });
 
   add_event->Bind(wxEVT_LEFT_DOWN, [&tile, &events, add_event, title, dscrt, accept, panel](wxMouseEvent&) {
@@ -111,7 +123,7 @@ Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::
     add_event->Hide();
     title->SetValue("");
     dscrt->SetValue("");
-    accept->Bind(wxEVT_LEFT_DOWN, [title, dscrt, add_event, accept, &tile, &events](wxMouseEvent&) {
+    accept->Bind(wxEVT_LEFT_DOWN, [title, dscrt, add_event, accept, &tile, &events, panel](wxMouseEvent&) {
       if (title->GetValue().ToStdString() != "" && dscrt->GetValue().ToStdString() != "") {
         Event event = Event(title->GetValue().ToStdString(), dscrt->GetValue().ToStdString(), 
         tile.getDay(), tile.getMonth(), tile.getYear());
@@ -123,6 +135,7 @@ Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::
         title->SetValue("");
         dscrt->SetValue("");
         add_to_data(event.get_event_as_struct());
+        paint_delete_images(events, tile, panel);
       }
     });
   });
