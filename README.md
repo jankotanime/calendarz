@@ -1,5 +1,5 @@
 # Calendarz  
-### Version: Beta 1.0
+### Version: Beta 1.1
 
 ---
 
@@ -19,4 +19,4 @@
 
 ## Features:
 - Date management using `chrono`.
-- Event management, with data stored in a CSV file.
+- Event management (adding and deleting), with data stored in a CSV file.

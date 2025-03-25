@@ -51,7 +51,7 @@ void add_to_data(OneEvent event) {
         return;
     }
 
-    file << event.title << ";" << event.title 
+    file << event.title << ";" << event.dscrpt
     << ";" << std::to_string(event.day) 
     << ";" << std::to_string(event.month) 
     << ";" << std::to_string(event.year) << "\n";
