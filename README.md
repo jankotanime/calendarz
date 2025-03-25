@@ -19,4 +19,5 @@
 
 ## Features:
 - Date management using `chrono`.
-- Event management (adding and deleting), with data stored in a CSV file.
+- Event management, with data stored in a CSV file.
+- Adding and deleting events.
