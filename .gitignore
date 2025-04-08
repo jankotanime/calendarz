@@ -1,4 +1,5 @@
 .vscode/
 build/
+build_ntf/
 TODO.md
 src/data/*

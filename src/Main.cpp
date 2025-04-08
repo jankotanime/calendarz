@@ -37,17 +37,8 @@ bool MyApp::OnInit() {
 
   images = paint_images(WIDTH, HEIGHT, localTime, tile, events, panel);
   
-  // ? Changeable date 
-  // std::tm tmDate = {};
-  // tmDate.tm_year = 2026 - 1900;
-  // tmDate.tm_mon = 2 - 1;
-  // tmDate.tm_mday = 24;
-  // std::time_t time = std::mktime(&tmDate);
-  // std::tm* localTime = std::localtime(&time);
-  
   panel->Bind(wxEVT_PAINT, [=](wxPaintEvent& event) {
-    panel->Bind(wxEVT_LEFT_DOWN, [](wxMouseEvent& event) {}); 
-    // ? Is it the best possible option to unbind mouseclick
+    panel->Bind(wxEVT_LEFT_DOWN, [](wxMouseEvent& event) {});
     if (tile.getDay() != 0) {
       edit_day_paint(WIDTH, HEIGHT, tile, events, panel);
     } else {
