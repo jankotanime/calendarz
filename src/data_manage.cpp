@@ -5,8 +5,10 @@
 #include <forward_list>
 #include "../include/Event.h"
 
+wxString GetDataPath();
+
 std::forward_list<Event> scan_data() {
-  std::ifstream file("src/data/events.csv");
+  std::ifstream file(GetDataPath());
 
   std::forward_list<Event> events;
 
@@ -45,7 +47,7 @@ std::forward_list<Event> scan_data() {
 }
 
 void add_to_data(OneEvent event) {
-    std::ofstream file("src/data/events.csv", std::ios::app);
+    std::ofstream file(GetDataPath(), std::ios::app);
     if (!file) {
         std::cerr << "Nie można otworzyć pliku!\n";
         return;
@@ -67,7 +69,7 @@ void remove_from_data(std::forward_list<Event> events) {
     }
   }
 
-  std::ofstream file("src/data/events.csv", std::ios::trunc);
+  std::ofstream file(GetDataPath(), std::ios::trunc);
   if (!file) {
       std::cerr << "Nie można otworzyć pliku!\n";
       return;

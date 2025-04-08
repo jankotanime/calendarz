@@ -63,3 +63,25 @@ void pick_day_handler(Tile& tile, Images images, int draw_day, int month, int ye
   images.right->Hide();
 };
 
+#include <wx/stdpaths.h>
+#include <wx/filename.h>
+
+wxString GetImagePath(const wxString& filename) {
+  wxString basePath = wxStandardPaths::Get().GetExecutablePath();
+  wxFileName path(basePath);
+  path.RemoveLastDir();
+  path.AppendDir("src");
+  path.AppendDir("img");
+  path.SetFullName(filename);
+  return path.GetFullPath();
+}
+
+wxString GetDataPath() {
+  wxString basePath = wxStandardPaths::Get().GetExecutablePath();
+  wxFileName path(basePath);
+  path.RemoveLastDir();
+  path.AppendDir("src");
+  path.AppendDir("data");
+  path.SetFullName("events.csv");
+  return path.GetFullPath();
+}

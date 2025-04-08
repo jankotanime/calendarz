@@ -1,4 +1,4 @@
 .vscode/
 build/
 TODO.md
-src/data/
+src/data/*

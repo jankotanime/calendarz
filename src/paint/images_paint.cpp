@@ -19,6 +19,7 @@ std::list<EventDeleteImage> deletes;
 
 void remove_from_data(std::forward_list<Event>);
 void add_to_data(OneEvent);
+wxString GetImagePath(const wxString&);
 
 void showDeleteImages(std::list<EventDeleteImage>& deletes, Tile tile) {
   int line = 0;
@@ -46,7 +47,7 @@ void paint_delete_images(std::forward_list<Event>& events, Tile& tile, wxPanel* 
   }
   deletes = {};
   for (auto& event : events) {
-    wxBitmap image_delete("src/img/delete.png", wxBITMAP_TYPE_JPEG);
+    wxBitmap image_delete(GetImagePath("delete.png"), wxBITMAP_TYPE_JPEG);
     wxStaticBitmap* new_delete = new wxStaticBitmap(panel, wxID_ANY, image_delete, wxPoint(400, 400), wxSize(32, 32));
     deletes.push_back({&event, new_delete});
     new_delete->Bind(wxEVT_LEFT_DOWN, [&event, &events, new_delete](wxMouseEvent&) {
@@ -68,19 +69,19 @@ void paint_delete_images(std::forward_list<Event>& events, Tile& tile, wxPanel* 
 }
 
 Images paint_images(int width, int height, std::tm* localTime, Tile& tile, std::forward_list<Event>& events, wxPanel* panel) {
-  wxBitmap image_go_back("src/img/return.png", wxBITMAP_TYPE_JPEG);
+  wxBitmap image_go_back(GetImagePath("return.png"), wxBITMAP_TYPE_JPEG);
   wxStaticBitmap* go_back = new wxStaticBitmap(panel, wxID_ANY, image_go_back, wxPoint(1100, 10), wxSize(80, 80));
 
-  wxBitmap image_arrow_left("src/img/arrow_left.png", wxBITMAP_TYPE_JPEG);
+  wxBitmap image_arrow_left(GetImagePath("arrow_left.png"), wxBITMAP_TYPE_JPEG);
   wxStaticBitmap* arrow_left = new wxStaticBitmap(panel, wxID_ANY, image_arrow_left, wxPoint(20, 20), wxSize(82, 20));
 
-  wxBitmap image_arrow_right("src/img/arrow_right.png", wxBITMAP_TYPE_JPEG);
+  wxBitmap image_arrow_right(GetImagePath("arrow_right.png"), wxBITMAP_TYPE_JPEG);
   wxStaticBitmap* arrow_right = new wxStaticBitmap(panel, wxID_ANY, image_arrow_right, wxPoint(1000, 20), wxSize(82, 20));
 
-  wxBitmap image_add_event("src/img/add_event.png", wxBITMAP_TYPE_JPEG);
+  wxBitmap image_add_event(GetImagePath("add_event.png"), wxBITMAP_TYPE_JPEG);
   wxStaticBitmap* add_event = new wxStaticBitmap(panel, wxID_ANY, image_add_event, wxPoint(620, 800), wxSize(300, 80));
 
-  wxBitmap image_accept("src/img/accept.png", wxBITMAP_TYPE_JPEG);
+  wxBitmap image_accept(GetImagePath("accept.png"), wxBITMAP_TYPE_JPEG);
   wxStaticBitmap* accept = new wxStaticBitmap(panel, wxID_ANY, image_accept, wxPoint(800, 800), wxSize(80, 80));
   
   wxTextCtrl* title = new wxTextCtrl(panel, wxID_ANY, "", wxPoint(30, 810), wxSize(300, 30));
