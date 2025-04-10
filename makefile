@@ -37,4 +37,7 @@ clean:
 directories:
 	mkdir -p bin build build_ntf
 
-notificationService: $(EXE_NTF)
+noti: $(EXE_NTF)
+
+notirun: $(EXE_NTF)
+	./$(EXE_NTF)

@@ -17,7 +17,7 @@ class NotificationService : public wxApp {
   std::forward_list<Event> events = scan_data();
   virtual bool OnInit();
   void OnEvent(std::string, std::string);
-  void checkEvents(const std::tm&);
+  void checkEvents();
 };
 
 #endif
