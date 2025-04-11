@@ -16,7 +16,7 @@ class NotificationService : public wxApp {
   int HEIGHT = 900;
   std::forward_list<Event> events = scan_data();
   virtual bool OnInit();
-  void OnEvent(std::string, std::string);
+  void OnEvent(std::string, std::string, wxFrame*);
   void checkEvents();
 };
 

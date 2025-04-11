@@ -21,3 +21,4 @@
 - Date management using `chrono`.
 - Event management, with data stored in a CSV file.
 - Adding and deleting events.
+- Daily notifications about events.

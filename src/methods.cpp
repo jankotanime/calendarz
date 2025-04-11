@@ -85,3 +85,16 @@ wxString GetDataPath() {
   path.SetFullName("events.csv");
   return path.GetFullPath();
 }
+
+int diffTimeToTommorow() {
+  auto now = std::chrono::system_clock::now();
+  std::time_t time = std::chrono::system_clock::to_time_t(now);
+  std::tm* localTime = std::localtime(&time);
+  std::tm localTimeC = *localTime;
+  localTimeC.tm_mday+=1;
+  localTimeC.tm_hour=0;
+  localTimeC.tm_min=0;
+  localTimeC.tm_sec=0;
+  int result = floor(std::difftime(std::mktime(&localTimeC), std::mktime(localTime)));
+  return result;
+}

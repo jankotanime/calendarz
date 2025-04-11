@@ -10,13 +10,16 @@
 
 wxIMPLEMENT_APP(NotificationService);
 std::forward_list<Event> scan_data();
+int diffTimeToTommorow();
 
 bool NotificationService::OnInit() {
   wxTimer* timer = new wxTimer(this);
+  
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
     checkEvents();
+    timer->StartOnce(diffTimeToTommorow());
   }, timer->GetId());
-  timer->Start(1000 * 60 * 60);
+  timer->StartOnce(diffTimeToTommorow());
   checkEvents();
   return true;
 }
@@ -31,20 +34,19 @@ void NotificationService::checkEvents() {
   std::forward_list<Event> events = scan_data();
   for (Event event : events) {
     if (event.getDay() == localTime->tm_mday && event.getMonth() == localTime->tm_mon && event.getYear() == localTime->tm_year) {
-      OnEvent(event.getTitle(), event.getDscrpt());
+      wxFrame* frame = new wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxSize(250, 60), wxNO_BORDER);
+      OnEvent(event.getTitle(), event.getDscrpt(), frame);
     }
   }
 }
 
-void NotificationService::OnEvent(std::string title, std::string description) {
-  wxFrame* frame = new wxFrame(nullptr, wxID_ANY, "", wxDefaultPosition, wxSize(250, 60), wxNO_BORDER);
+void NotificationService::OnEvent(std::string title, std::string dscrpt, wxFrame* frame) {
   wxTimer* timer = new wxTimer(this);
+
   Bind(wxEVT_TIMER, [=](wxTimerEvent& event) {
     frame->Destroy();
   }, timer->GetId());
-  timer->Start(2000);
-
-  // frame->SetTransparent(0);
+  timer->StartOnce(3000);
   
   wxPanel* panel = new wxPanel(frame, wxID_ANY);
   panel->SetSize(100, 100);
@@ -55,8 +57,7 @@ void NotificationService::OnEvent(std::string title, std::string description) {
     dc.SetTextForeground(wxColour(10, 30, 10));
     dc.DrawText(title, wxPoint(5, 5));
     dc.SetFont(wxFont(15, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
-    dc.DrawText(description, wxPoint(5, 30));  
-    panel->Refresh();
+    dc.DrawText(dscrpt, wxPoint(5, 30));  
   });
   frame->Show(true);
 }
