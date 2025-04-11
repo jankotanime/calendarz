@@ -12,12 +12,10 @@ class NotificationService : public wxApp {
   private:
   wxTimer timer;
   public:
-  int WIDTH = 1200;
-  int HEIGHT = 900;
   std::forward_list<Event> events = scan_data();
   virtual bool OnInit();
-  void OnEvent(std::string, std::string, wxFrame*);
-  void checkEvents();
+  void OnEvent(std::string, std::string, wxFrame*, int);
+  void checkEvents(wxFrame*);
 };
 
 #endif

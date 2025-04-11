@@ -1,5 +1,5 @@
 # Calendarz  
-### Version: Beta 1.1
+### Version: Beta 1.3
 
 ---
 
@@ -13,9 +13,15 @@
 - wxWidgets 3.0.5+  
 - Make (optional)
 
+### Running (On linux):
+1. Run Calendarz with `./bin/calendarz`.
+2. Run notificationService with `./bin/notificationService`.
+3. For auto-starting open `~/.profile` or `~/.bash_profile` add "./{Calendarz-location}/bin/notificationService" to the new last line.
+
 ### Building:
 1. Modify the Makefile to include the wxWidgets folder.
-2. Run with `make run`.
+2. Build Calendarz with `make run`.
+3. Build NotificationService with `make notirun`.
 
 ## Features:
 - Date management using `chrono`.
