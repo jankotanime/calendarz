@@ -20,7 +20,7 @@ void edit_day_paint(int width, int height, Tile& tile, std::forward_list<Event> 
   wxPoint localPos = panel->ScreenToClient(screenPos);
 
   dc.SetPen(wxPen(wxColour(20, 40, 20), 5));
-  dc.SetTextForeground(wxColour(20, 40, 20));
+  dc.SetTextForeground(wxColour(120, 125, 120));
   dc.SetFont(wxFont(20, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
 
   // Writing date

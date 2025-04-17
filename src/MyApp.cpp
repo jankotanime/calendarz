@@ -23,7 +23,7 @@ Tile pick_tile(OneTile);
 
 bool MyApp::OnInit() {
   wxFrame* frame = new wxFrame(nullptr, wxID_ANY, "Calendarz", wxDefaultPosition, wxSize(WIDTH, HEIGHT));
-  frame -> SetBackgroundColour(wxColour(50, 60, 50));
+  frame -> SetBackgroundColour(wxColour(40, 45, 40));
   wxInitAllImageHandlers();
 
   wxPanel* panel = new wxPanel(frame);

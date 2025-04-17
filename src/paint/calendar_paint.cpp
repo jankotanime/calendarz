@@ -54,14 +54,14 @@ void calander_paint(int width, int height, const std::tm& localTime, std::tm tod
   wxPoint screenPos = wxGetMousePosition();
   wxPoint localPos = panel->ScreenToClient(screenPos);
 
-  dc.SetBrush(wxBrush(wxColour(140, 160, 140)));
+  dc.SetBrush(wxBrush(wxColour(140, 145, 140)));
   dc.DrawRectangle(x_border, y_border, x_border_end-x_border, y_border_end-y_border);
   dc.SetFont(wxFont(20, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
-  dc.SetTextForeground(wxColour(10, 30, 10));
+  dc.SetTextForeground(wxColour(120, 125, 120));
 
   for (int i = 0; i < 7; i++) {
     for (int j = 0; j < 6; j++) {
-      dc.SetPen(wxPen(wxColour(30, 40, 30), 5));
+      dc.SetPen(wxPen(wxColour(30, 35, 30), 5));
       int x = floor((width - x_border * 2) / 7.0) * i + x_border;
       int y = floor((height - y_border) / 6.0) * j + y_border;
       int xEnd = x + floor(width / 7.0);
@@ -76,15 +76,16 @@ void calander_paint(int width, int height, const std::tm& localTime, std::tm tod
       } else {
         draw_day = (i + j * 7 - first_day - 5);
       }
+      // Hover
       if (draw_day == day && year == today.tm_year && month == today.tm_mon) {
         // Painting for today
         if (localPos.x > x && localPos.x < xEnd-10 && localPos.y > y && localPos.y < yEnd-15) {
-          dc.SetBrush(wxBrush(wxColour(200, 220, 200)));
+          dc.SetBrush(wxBrush(wxColour(200, 205, 200)));
           panel->Bind(wxEVT_LEFT_DOWN, [&tile, images, draw_day, month, year] (wxMouseEvent& event) {
             pick_day_handler(tile, images, draw_day, month, year);
           });
         } else {
-          dc.SetBrush(wxBrush(wxColour(180, 200, 180)));
+          dc.SetBrush(wxBrush(wxColour(180, 185, 180)));
         }
         dc.DrawRectangle(x, y, floor((width - x_border * 2) / 7.0), floor((height - y_border) / 6.0));  
         dc.DrawText(std::to_string(day), wxPoint(x+10, y+10));
@@ -103,10 +104,10 @@ void calander_paint(int width, int height, const std::tm& localTime, std::tm tod
             panel->Bind(wxEVT_LEFT_DOWN, [&tile, images, draw_day, month, year] (wxMouseEvent& event) {
               pick_day_handler(tile, images, draw_day, month, year);
             });
-            dc.SetBrush(wxBrush(wxColour(155, 175, 155)));
+            dc.SetBrush(wxBrush(wxColour(155, 160, 155)));
             dc.DrawRectangle(x, y, floor((width - x_border * 2) / 7.0), floor((height - y_border) / 6.0));
           }
-          dc.SetTextForeground(wxColour(10, 30, 10));
+          dc.SetTextForeground(wxColour(30, 35, 30));
           dc.DrawText(std::to_string(draw_day), wxPoint(x+10, y+10));
         }
       }
@@ -121,13 +122,7 @@ void calander_paint(int width, int height, const std::tm& localTime, std::tm tod
     }
   }
 
-  // Cursor position and borders
-  dc.SetPen(wxPen(wxColour(0, 0, 0), 1));
-  dc.SetFont(wxFont(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
-  dc.DrawText(std::to_string(localPos.x), wxPoint(5, 5));
-  dc.DrawText(std::to_string(localPos.y), wxPoint(50, 5));
-
-  dc.SetPen(wxPen(wxColour(20, 40, 20), 5));
+  dc.SetPen(wxPen(wxColour(30, 35, 30), 5));
   dc.DrawLine(x_border, y_border_end, x_border_end, y_border_end);
   dc.DrawLine(x_border_end, y_border, x_border_end, y_border_end);
 }
