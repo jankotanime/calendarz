@@ -28,3 +28,8 @@
 - Event management, with data stored in a CSV file.
 - Adding and deleting events.
 - Daily notifications about events.
+
+## Preview
+![Zrzut ekranu 2025-06-10 213225](https://github.com/user-attachments/assets/1dc4c197-acc9-4db2-899f-bce03a91275c)
+![Zrzut ekranu 2025-06-10 213516](https://github.com/user-attachments/assets/aa961f28-7bea-4b70-903a-db37beb10deb)
+![Zrzut ekranu 2025-06-10 213417](https://github.com/user-attachments/assets/3add2bdf-7328-4bce-a0e1-033c36517b0e)
